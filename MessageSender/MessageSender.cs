@@ -134,7 +134,7 @@ namespace MessageSender
 
 			var broadcast = false;
 			if (string.Equals(args.Parameters[0], "-b", StringComparison.OrdinalIgnoreCase) ||
-			    string.Equals(args.Parameters[0], "--broadcast", StringComparison.OrdinalIgnoreCase))
+				string.Equals(args.Parameters[0], "--broadcast", StringComparison.OrdinalIgnoreCase))
 			{
 				broadcast = true;
 				args.Parameters.RemoveAt(0);
@@ -147,7 +147,7 @@ namespace MessageSender
 			{
 				byte r, g, b;
 				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
-				
+
 				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
 				{
 					text = string.Join(" ", args.Parameters);
@@ -165,12 +165,7 @@ namespace MessageSender
 				color = Color.Yellow;
 			}
 
-			var position = GetPosition(args.Player.TPlayer.getRect());
-
-			if (broadcast)
-				TSPlayer.All.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
-			else
-				args.Player.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
+			SendCombatText(args.Player, text, color, broadcast);
 		}
 
 		private static void SendCombatTextToOther(CommandArgs args)
@@ -226,12 +221,7 @@ namespace MessageSender
 				text = string.Join(" ", args.Parameters.Skip(1));
 			}
 
-			var position = GetPosition(player.TPlayer.getRect());
-
-			if (broadcast)
-				TSPlayer.All.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
-			else
-				player.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
+			SendCombatText(player, text, color, broadcast);
 		}
 
 		private static void SendCombatTextToPosition(CommandArgs args)
@@ -256,7 +246,7 @@ namespace MessageSender
 				args.Player.SendErrorMessage("Invalid position!");
 				return;
 			}
-			for(var i = 0; i < 2; i++)
+			for (var i = 0; i < 2; i++)
 				args.Parameters.RemoveAt(0);
 
 			var players = TShock.Utils.FindPlayer(args.Parameters[0]);
@@ -296,7 +286,22 @@ namespace MessageSender
 				text = string.Join(" ", args.Parameters.Skip(1));
 			}
 
-			var position = GetPosition(new Rectangle(x * 16, y * 16, 0, 0));
+			SendCombatText(player, text, color, new Vector2(x * 16, y * 16), broadcast);
+		}
+
+		public static void SendCombatText(TSPlayer player, string text, Color color, bool broadcast = false)
+		{
+			SendCombatText(player, text, color, player.TPlayer.getRect(), broadcast);
+		}
+
+		public static void SendCombatText(TSPlayer player, string text, Color color, Vector2 position, bool broadcast = false)
+		{
+			SendCombatText(player, text, color, new Rectangle((int)position.X, (int)position.Y, 0, 0), broadcast);
+		}
+
+		public static void SendCombatText(TSPlayer player, string text, Color color, Rectangle location, bool broadcast = false)
+		{
+			var position = GetPosition(location);
 
 			if (broadcast)
 				TSPlayer.All.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
@@ -308,7 +313,7 @@ namespace MessageSender
 		{
 			var vector = Vector2.Zero;
 
-			var position =  new Vector2(
+			var position = new Vector2(
 				location.X + location.Width * 0.5f - vector.X * 0.5f,
 				location.Y + location.Height * 0.25f - vector.Y * 0.5f
 			);
