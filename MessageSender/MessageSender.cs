@@ -228,7 +228,7 @@ namespace MessageSender
 		{
 			if (args.Parameters.Count < 4)
 			{
-				args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /sendctpos [-b/--broadcast] <tileX> <tileY> <Player> <Messages> [r] [g] [b]");
+				args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /sendctpos [-b/--broadcast] <tileX> <tileY> <Messages> [r] [g] [b]");
 				return;
 			}
 
@@ -248,19 +248,6 @@ namespace MessageSender
 			}
 			for (var i = 0; i < 2; i++)
 				args.Parameters.RemoveAt(0);
-
-			var players = TShock.Utils.FindPlayer(args.Parameters[0]);
-			if (players.Count > 1)
-			{
-				TShock.Utils.SendMultipleMatchError(args.Player, players.Select(p => p.Name));
-				return;
-			}
-			if (players.Count == 0)
-			{
-				args.Player.SendErrorMessage("Invalid player name!");
-				return;
-			}
-			var player = players[0];
 
 			Color color;
 			string text;
@@ -286,7 +273,7 @@ namespace MessageSender
 				text = string.Join(" ", args.Parameters.Skip(1));
 			}
 
-			SendCombatText(player, text, color, new Vector2(x * 16, y * 16), broadcast);
+			SendCombatText(args.Player, text, color, new Vector2(x * 16, y * 16), broadcast);
 		}
 
 		public static void SendCombatText(TSPlayer player, string text, Color color, bool broadcast = false)
