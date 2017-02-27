@@ -226,7 +226,7 @@ namespace MessageSender
 
 		private static void SendCombatTextToPosition(CommandArgs args)
 		{
-			if (args.Parameters.Count < 4)
+			if (args.Parameters.Count < 3)
 			{
 				args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /sendctpos [-b/--broadcast] <tileX> <tileY> <Messages> [r] [g] [b]");
 				return;
@@ -252,25 +252,25 @@ namespace MessageSender
 			Color color;
 			string text;
 
-			if (args.Parameters.Count >= 5)
+			if (args.Parameters.Count >= 4)
 			{
 				byte r, g, b;
 				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
 				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
 				{
 					color = Color.Yellow;
-					text = string.Join(" ", args.Parameters.Skip(1));
+					text = string.Join(" ", args.Parameters);
 				}
 				else
 				{
 					color = new Color(r, g, b);
-					text = string.Join(" ", args.Parameters.GetRange(1, args.Parameters.Count - 4));
+					text = string.Join(" ", args.Parameters.GetRange(0, args.Parameters.Count - 4));
 				}
 			}
 			else
 			{
 				color = Color.Yellow;
-				text = string.Join(" ", args.Parameters.Skip(1));
+				text = string.Join(" ", args.Parameters);
 			}
 
 			SendCombatText(args.Player, text, color, new Vector2(x * 16, y * 16), broadcast);
