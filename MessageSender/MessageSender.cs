@@ -8,7 +8,7 @@ using TShockAPI;
 
 namespace MessageSender
 {
-	[ApiVersion(2, 0)]
+	[ApiVersion(2, 1)]
 	public class MessageSender : TerrariaPlugin
 	{
 		public override string Name => GetType().Name;
