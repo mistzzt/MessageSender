@@ -291,9 +291,9 @@ namespace MessageSender
 			var position = GetPosition(location);
 
 			if (broadcast)
-				TSPlayer.All.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
+				TSPlayer.All.SendData((PacketTypes)119, text, (int)color.PackedValue, position.X, position.Y);
 			else
-				player.SendData(PacketTypes.CreateCombatText, text, (int)color.PackedValue, position.X, position.Y);
+				player.SendData((PacketTypes)119, text, (int)color.PackedValue, position.X, position.Y);
 		}
 
 		private static Vector2 GetPosition(Rectangle location)
