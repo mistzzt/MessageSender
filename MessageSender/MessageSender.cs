@@ -67,9 +67,8 @@ namespace MessageSender
 
 			if (args.Parameters.Count >= 4)
 			{
-				byte r, g, b;
-				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
-				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
+                var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
+				if (!byte.TryParse(rgbs[0], out var r) || !byte.TryParse(rgbs[1], out var g) || !byte.TryParse(rgbs[2], out var b))
 				{
 					args.Player.SendInfoMessage(string.Join(" ", args.Parameters));
 				}
@@ -92,10 +91,10 @@ namespace MessageSender
 				return;
 			}
 
-			var players = TShock.Utils.FindPlayer(args.Parameters[0]);
+			var players = TSPlayer.FindByNameOrID(args.Parameters[0]);
 			if (players.Count > 1)
 			{
-				TShock.Utils.SendMultipleMatchError(args.Player, players.Select(p => p.Name));
+				args.Player.SendMultipleMatchError(players.Select(p => p.Name));
 				return;
 			}
 			if (players.Count == 0)
@@ -107,9 +106,8 @@ namespace MessageSender
 			var player = players[0];
 			if (args.Parameters.Count >= 5)
 			{
-				byte r, g, b;
-				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
-				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
+                var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
+				if (!byte.TryParse(rgbs[0], out var r) || !byte.TryParse(rgbs[1], out var g) || !byte.TryParse(rgbs[2], out var b))
 				{
 					player.SendInfoMessage(string.Join(" ", args.Parameters.Skip(1)));
 				}
@@ -145,10 +143,9 @@ namespace MessageSender
 
 			if (args.Parameters.Count >= 4)
 			{
-				byte r, g, b;
-				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
+                var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
 
-				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
+				if (!byte.TryParse(rgbs[0], out var r) || !byte.TryParse(rgbs[1], out var g) || !byte.TryParse(rgbs[2], out var b))
 				{
 					text = string.Join(" ", args.Parameters);
 					color = Color.Yellow;
@@ -184,10 +181,10 @@ namespace MessageSender
 				args.Parameters.RemoveAt(0);
 			}
 
-			var players = TShock.Utils.FindPlayer(args.Parameters[0]);
+			var players = TSPlayer.FindByNameOrID(args.Parameters[0]);
 			if (players.Count > 1)
 			{
-				TShock.Utils.SendMultipleMatchError(args.Player, players.Select(p => p.Name));
+				args.Player.SendMultipleMatchError(players.Select(p => p.Name));
 				return;
 			}
 			if (players.Count == 0)
@@ -202,9 +199,8 @@ namespace MessageSender
 
 			if (args.Parameters.Count >= 5)
 			{
-				byte r, g, b;
-				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
-				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
+                var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
+				if (!byte.TryParse(rgbs[0], out var r) || !byte.TryParse(rgbs[1], out var g) || !byte.TryParse(rgbs[2], out var b))
 				{
 					color = Color.Yellow;
 					text = string.Join(" ", args.Parameters.Skip(1));
@@ -240,8 +236,7 @@ namespace MessageSender
 				args.Parameters.RemoveAt(0);
 			}
 
-			int x, y;
-			if (!int.TryParse(args.Parameters[0], out x) || !int.TryParse(args.Parameters[1], out y))
+            if (!int.TryParse(args.Parameters[0], out var x) || !int.TryParse(args.Parameters[1], out var y))
 			{
 				args.Player.SendErrorMessage("Invalid position!");
 				return;
@@ -254,9 +249,8 @@ namespace MessageSender
 
 			if (args.Parameters.Count >= 4)
 			{
-				byte r, g, b;
-				var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
-				if (!byte.TryParse(rgbs[0], out r) || !byte.TryParse(rgbs[1], out g) || !byte.TryParse(rgbs[2], out b))
+                var rgbs = args.Parameters.Skip(args.Parameters.Count - 3).ToArray();
+				if (!byte.TryParse(rgbs[0], out var r) || !byte.TryParse(rgbs[1], out var g) || !byte.TryParse(rgbs[2], out var b))
 				{
 					color = Color.Yellow;
 					text = string.Join(" ", args.Parameters);
@@ -291,9 +285,9 @@ namespace MessageSender
 			var position = GetPosition(location);
 
 			if (broadcast)
-				TSPlayer.All.SendData((PacketTypes)119, text, (int)color.PackedValue, position.X, position.Y);
+				TSPlayer.All.SendData(PacketTypes.CreateCombatTextExtended, text, (int)color.PackedValue, position.X, position.Y);
 			else
-				player.SendData((PacketTypes)119, text, (int)color.PackedValue, position.X, position.Y);
+				player.SendData(PacketTypes.CreateCombatTextExtended, text, (int)color.PackedValue, position.X, position.Y);
 		}
 
 		private static Vector2 GetPosition(Rectangle location)
